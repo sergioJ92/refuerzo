@@ -1,0 +1,23 @@
+#para compilado de python
+
+*.pyc
+
+# logs file
+
+*.log
+
+# para Pycharm 
+
+*.idea
+
+#para compilados pycharm 
+
+__pycache__
+
+#para git 
+
+*.git
+
+
+#para el virtual env
+env/
