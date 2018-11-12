@@ -45,7 +45,8 @@ class Jugador:
 
     def reset(self):
         self.estado=False
-        self.inteligencia.vaciar_acciones()
+        if self.inteligencia!=None:
+            self.inteligencia.vaciar_acciones()
 
     def set_aprendizaje(self, tabla):
         if self.inteligencia != None:

@@ -2,10 +2,6 @@ import csvManager
 import os
 
 class tictactoe:
-    iterations = 0
-    p1s = 0
-    p2s = 0
-    ties = 0
     pure_ai = True
     tablero = None
     jugadores = None
@@ -29,7 +25,6 @@ class tictactoe:
                 break
 
     def jugar(self):
-        self.iterations += 1
         self.tablero.imprimir()
         while(self.end_game() != True):
             for jugador in self.jugadores:
@@ -42,28 +37,13 @@ class tictactoe:
                         posicion = self.solicitar_jugada()
                 self.tablero.marcar_casilla(jugador.get_simbol(),posicion[0],posicion[1])
                 self.verificar_jugada_ganadora(jugador)
-                os.system('cls')
                 self.tablero.imprimir()
+                os.system('cls')
                 if (self.end_game()):
                     break
 
-        self.tablero.imprimir()
-
-        ganador = self.show_ganador()
-        if self.resultado_game == "Tie":
-            self.ties += 1
-        elif self.resultado_game == "player1":
-            self.p1s += 1
-        elif self.resultado_game == "player2":
-            self.p2s += 1
         self.aprender()
-        if not self.pure_ai or self.iterations % 100 == 0:
-            os.system('cls')
-            self.tablero.imprimir()
-            print("Statistics", self.iterations, "ties", self.ties, "p1", self.p1s, "p2", self.p2s)
-
-        print(ganador, self.iterations, self.ties)
-        #self.new_game()
+        print(self.resultado_game)
 
 
     def end_game(self):
@@ -75,24 +55,25 @@ class tictactoe:
             res = True
         return res
 
-    def new_game(self,t=None):
-        print(self.pure_ai)
+    def new_game(self):
+        res=False
         if self.pure_ai == False:
             print("Press R to play again")
             tecla = input()
-        else:
-            if t == None:
-                print("Playing again !")
-                tecla = "R"
-                if(tecla=="r" or tecla=="R"):
-                    self.tablero.reiniciar_juego()
-                    for jugador in self.jugadores:
-                        jugador.reset()
-                    self.jugar()
-            else:
-                self.csvManager.guardarAprendizaje(self.jugadores)
+            if (tecla == "r" or tecla == "R"):
+                res=True
+                self.reset_game()
 
+        return res
 
+    def reset_game(self):
+        self.tablero.reiniciar_juego()
+        self.resultado_game = "Tie"
+        for jugador in self.jugadores:
+            jugador.reset()
+
+    def guardarEnCSV(self):
+        self.csvManager.guardarAprendizaje(self.jugadores)
 
     def verificar_jugada_ganadora(self,jugador):
         estado_tablero = self.tablero.get_tablero()
@@ -166,9 +147,31 @@ class tictactoe:
     def encender(self):
         print('load csv data')
         self.jugar()
+        while (self.new_game()):
+            self.jugar()
 
-    def entrenar(self, iteraciones):
-        #jugador 1
-        #jugador 2
-        #entrenando
-        print(iteraciones)
+    def entrenar(self, iterations):
+        iteration = 1
+        p1s = 0
+        p2s = 0
+        ties = 0
+
+        while (iteration<=iterations):
+            self.jugar()
+            if self.resultado_game == "Tie":
+                ties += 1
+            elif self.resultado_game == "player1":
+                p1s += 1
+            elif self.resultado_game == "player2":
+                p2s += 1
+
+            if not self.pure_ai or iterations % 100 == 0:
+                os.system('cls')
+                self.tablero.imprimir()
+                print("Statistics", iterations, "ties", ties, "p1", p1s, "p2", p2s)
+
+            self.reset_game()
+            iteration=iteration+1
+
+        self.guardarEnCSV()
+
