@@ -30,15 +30,16 @@ class csvManager:
                 for fila in files:
                     vector = fila.replace("\n","")
                     valorActual = vector.split(":,")
-                    self.actualCsv.append(valorActual)
+                    self.actualCsv.append([int(valorActual[0]),valorActual[1]])
                     vector = valorActual[1].split(",")
                     tabla_decimal = self.parcer_vector(vector)
-                    self.asignarAprendizaje(tabla_decimal, lista_jugadores)
+                    self.asignarAprendizaje(tabla_decimal,self.actualCsv[int(valorActual[0])-1] ,lista_jugadores)
 
-    def asignarAprendizaje(self,lista_valores,jugadores):
+    def asignarAprendizaje(self,lista_valores,jugador_index,jugadores):
         for jugador in jugadores:
             if jugador.tengo_ai():
-                jugador.set_aprendizaje(lista_valores)
+                if jugador.get_index()==jugador_index[0]:
+                    jugador.set_aprendizaje(lista_valores)
 
     def parcer_vector(self, vector):
         index = 0
@@ -54,7 +55,7 @@ class csvManager:
         print(matriz)
         return matriz
 
-    def guardarAprendizaje(self, jugadores):####revisar bien con index
+    def guardarAprendizaje(self, jugadores):
         objetoCsv = open(self.nombre_carpeta+"/"+self.nombre_file, "w")
         fila=""
         for jugador in jugadores:
@@ -64,12 +65,10 @@ class csvManager:
                 for i in range(0, 3):
                     for j in range(0, 3):
                         fila=fila+str(matriz[i][j])
-                        #objetoCsv.write(str(matriz[i][j]))
                         if not (i==2 and j==2):
                             fila=fila+","
-                            #objetoCsv.write(",")
-                #objetoCsv.write("\n")
-                fila=fila+"\n"
+                if(jugador.get_index()!=2):
+                    fila=fila+"\n"
             else:
                 indexJugador=jugador.get_index()
                 valorEntrenamiento=self.actualCsv[indexJugador-1]

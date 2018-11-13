@@ -9,7 +9,7 @@ ai=QLearning.QLearning()
 ai2=QLearning.QLearning()
 
 jugador1=Jugador.Jugador("player1",'X',ai)
-jugador2=Jugador.Jugador("player2",'O',None)
+jugador2=Jugador.Jugador("player2",'O',ai2)
 
 jugadores=[]
 jugadores.append(jugador1)
@@ -18,5 +18,5 @@ jugadores.append(jugador2)
 tablero=Tablero.Tablero()
 game=Tictactoe.tictactoe(tablero,jugadores)
 
-game.encender()
-#game.entrenar(2000)
+#game.encender()
+game.entrenar(1000)
