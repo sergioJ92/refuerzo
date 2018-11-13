@@ -6,6 +6,7 @@ class csvManager:
     nombre_file=""
     nombre_carpeta=""
     csvFile=""
+    actualCsv=[]
     def __init__(self,listaJugadores):
         self.nombre_file = "Train.csv"
         self.nombre_carpeta = "train"
@@ -23,11 +24,16 @@ class csvManager:
         file = open(self.nombre_carpeta+"/"+self.nombre_file, 'r')
         if file.mode == 'r':
             files = file.readlines()
-            for fila in files:
-                vector = fila.replace("\n","")
-                vector = vector.split(",")
-                tabla_decimal = self.parcer_vector(vector)
-                self.asignarAprendizaje(tabla_decimal, lista_jugadores)
+            if(len(files)==0):
+                self.actualCsv=[["1","0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0"],["2","0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0"]]
+            else:
+                for fila in files:
+                    vector = fila.replace("\n","")
+                    valorActual = vector.split(":,")
+                    self.actualCsv.append(valorActual)
+                    vector = valorActual[1].split(",")
+                    tabla_decimal = self.parcer_vector(vector)
+                    self.asignarAprendizaje(tabla_decimal, lista_jugadores)
 
     def asignarAprendizaje(self,lista_valores,jugadores):
         for jugador in jugadores:
@@ -48,21 +54,26 @@ class csvManager:
         print(matriz)
         return matriz
 
-    def guardarAprendizaje(self, jugadores):
+    def guardarAprendizaje(self, jugadores):####revisar bien con index
         objetoCsv = open(self.nombre_carpeta+"/"+self.nombre_file, "w")
+        fila=""
         for jugador in jugadores:
+            fila = fila + str(jugador.get_index()) + ":,"
             if jugador.tengo_ai():
                 matriz = jugador.get_inteligencia()
                 for i in range(0, 3):
                     for j in range(0, 3):
-                        objetoCsv.write(str(matriz[i][j]))
+                        fila=fila+str(matriz[i][j])
+                        #objetoCsv.write(str(matriz[i][j]))
                         if not (i==2 and j==2):
-                            objetoCsv.write(",")
-                objetoCsv.write("\n")
+                            fila=fila+","
+                            #objetoCsv.write(",")
+                #objetoCsv.write("\n")
+                fila=fila+"\n"
+            else:
+                indexJugador=jugador.get_index()
+                valorEntrenamiento=self.actualCsv[indexJugador-1]
+                fila = fila +valorEntrenamiento[1]
+
+        objetoCsv.write(fila)
         objetoCsv.close()
-
-    #def parcerCsv(self):
-
-
-
-

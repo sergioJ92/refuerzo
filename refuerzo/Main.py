@@ -19,10 +19,4 @@ tablero=Tablero.Tablero()
 game=Tictactoe.tictactoe(tablero,jugadores)
 
 game.encender()
-
-
-#while True:
-#    game.new_game()
-#    if game.iterations == 3:
-#        game.new_game(t="q")
-#        break
+#game.entrenar(2000)

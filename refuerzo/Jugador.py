@@ -5,6 +5,7 @@ class Jugador:
     simbol=None
     estado=None
     inteligencia=None
+    index=None
 
     def __init__(self,name,simbol,qlearning):
         self.name=name
@@ -20,6 +21,12 @@ class Jugador:
 
     def set_estado(self, estado):
         self.estado = estado
+
+    def set_index(self,index):
+        self.index = index
+
+    def get_index(self):
+        return self.index
 
     def ganaste(self):
         return self.estado

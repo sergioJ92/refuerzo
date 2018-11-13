@@ -16,7 +16,7 @@ class tictactoe:
                         [(2, 0), (1, 1), (0, 2)]]
 
     def __init__(self, tablero, jugadores):
-        self.jugadores=jugadores
+        self.jugadores=self.asignar_index(jugadores)
         self.tablero=tablero
         self.csvManager=csvManager.csvManager(jugadores)
         for j in jugadores:
@@ -24,10 +24,17 @@ class tictactoe:
                 self.pure_ai = False
                 break
 
+    def asignar_index(self, jugadores):
+        index=1
+        for j in jugadores:
+            j.set_index(index)
+            index=index+1
+        return jugadores
+
     def jugar(self):
-        self.tablero.imprimir()
         while(self.end_game() != True):
             for jugador in self.jugadores:
+                self.tablero.imprimir()
                 if(jugador.tengo_ai()):
                     posicion = jugador.ai_play(self.tablero.get_tablero())
                 else:
@@ -37,9 +44,9 @@ class tictactoe:
                         posicion = self.solicitar_jugada()
                 self.tablero.marcar_casilla(jugador.get_simbol(),posicion[0],posicion[1])
                 self.verificar_jugada_ganadora(jugador)
-                self.tablero.imprimir()
                 os.system('cls')
                 if (self.end_game()):
+                    self.tablero.imprimir()
                     break
 
         self.aprender()
@@ -63,7 +70,6 @@ class tictactoe:
             if (tecla == "r" or tecla == "R"):
                 res=True
                 self.reset_game()
-
         return res
 
     def reset_game(self):
@@ -149,6 +155,7 @@ class tictactoe:
         self.jugar()
         while (self.new_game()):
             self.jugar()
+        self.guardarEnCSV()
 
     def entrenar(self, iterations):
         iteration = 1
@@ -165,7 +172,7 @@ class tictactoe:
             elif self.resultado_game == "player2":
                 p2s += 1
 
-            if not self.pure_ai or iterations % 100 == 0:
+            if iterations % 100 == 0:
                 os.system('cls')
                 self.tablero.imprimir()
                 print("Statistics", iterations, "ties", ties, "p1", p1s, "p2", p2s)
