@@ -1,3 +1,7 @@
+#no subir train
+
+Train.csv
+
 #para compilado de python
 
 *.pyc
